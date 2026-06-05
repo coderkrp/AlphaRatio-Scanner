@@ -1,0 +1,8 @@
+sqlalchemy
+pyyaml
+yfinance
+pandas
+pandas-ta
+python-telegram-bot
+apscheduler
+httpx

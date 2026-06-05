@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  scanner:
+    build: .
+    image: ratio-scanner:latest
+    container_name: ratio-scanner-job
+    volumes:
+      - ./data:/app/data
+      - ./config.yaml:/app/config.yaml:ro
+    environment:
+      # Optional: Override Telegram credentials via .env instead of yaml
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN:-}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID:-}
+    # Using 'profiles' prevents the container from running automatically if we just do docker-compose up
+    profiles:
+      - cli

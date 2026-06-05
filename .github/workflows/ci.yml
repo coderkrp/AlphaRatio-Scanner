@@ -1,0 +1,44 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install uv
+      uses: astral-sh/setup-uv@v2
+      with:
+        enable-cache: true
+        cache-dependency-glob: "requirements.txt"
+        
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version-file: ".python-version"
+        # Fallback if file doesn't exist
+        python-version: "3.12"
+
+    - name: Install dependencies
+      run: |
+        uv venv
+        uv pip install -r requirements.txt
+        uv pip install ruff pytest pytest-asyncio pytest-cov
+
+    - name: Lint with Ruff
+      run: |
+        uv run ruff check .
+        uv run ruff format --check .
+
+    - name: Run Tests
+      # We skip testing for the raw boilerplate right now.
+      # Replace with `uv run pytest tests/ --cov=src` when tests are present.
+      run: |
+        echo "Pytest integration ready. Add tests/ to run."

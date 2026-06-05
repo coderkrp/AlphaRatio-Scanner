@@ -1,0 +1,38 @@
+# Telegram Configuration
+telegram:
+  token: "YOUR_TELEGRAM_BOT_TOKEN"
+  # Provide a single ID or a list of IDs:
+  # chat_id: "YOUR_CHAT_ID"
+  chat_id: 
+    - "YOUR_CHAT_ID_1"
+    - "YOUR_CHAT_ID_2"
+
+# Database Configuration
+database:
+  url: "sqlite:///./ratio_scanner.db"
+
+# Scanning Symbols
+symbols:
+  - ticker: "RELIANCE.NS"
+    name: "Reliance Industries"
+    benchmarks: ["^NSEI", "^CNXENERGY"]
+  - ticker: "HDFCBANK.NS"
+    name: "HDFC Bank"
+    benchmarks: ["^NSEI", "^NSEBANK"]
+  - ticker: "INFY.NS"
+    name: "Infosys"
+    benchmarks: ["^NSEI"]
+  - ticker: "TCS.NS"
+    name: "Tata Consultancy Services"
+    benchmarks: ["^NSEI"]
+
+# Benchmarks to track
+benchmarks:
+  - ticker: "^NSEI"
+    name: "Nifty 50"
+  - ticker: "^NSMIDCP"
+    name: "Nifty Midcap 100"
+  - ticker: "^CNXENERGY"
+    name: "Nifty Energy"
+  - ticker: "^NSEBANK"
+    name: "Nifty Bank"
