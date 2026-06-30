@@ -17,20 +17,16 @@ jobs:
       uses: astral-sh/setup-uv@v2
       with:
         enable-cache: true
-        cache-dependency-glob: "requirements.txt"
+        cache-dependency-glob: "uv.lock"
         
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version-file: ".python-version"
-        # Fallback if file doesn't exist
         python-version: "3.12"
 
     - name: Install dependencies
       run: |
-        uv venv
-        uv pip install -r requirements.txt
-        uv pip install ruff pytest pytest-asyncio pytest-cov
+        uv sync --extra dev
 
     - name: Lint with Ruff
       run: |
@@ -38,7 +34,5 @@ jobs:
         uv run ruff format --check .
 
     - name: Run Tests
-      # We skip testing for the raw boilerplate right now.
-      # Replace with `uv run pytest tests/ --cov=src` when tests are present.
       run: |
-        echo "Pytest integration ready. Add tests/ to run."
+        uv run pytest
