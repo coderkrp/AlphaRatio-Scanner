@@ -42,10 +42,10 @@ def seed_database():
     
     # REVISED STRATEGY: Treat benchmarks as symbols for price storage
     # Step 1: Ensure all benchmark tickers are in Symbols table
-    for b_data in config.get('benchmarks', []):
-        sym = db.query(Symbol).filter(Symbol.ticker == b_data['ticker']).first()
+    for b_data in config.benchmarks:
+        sym = db.query(Symbol).filter(Symbol.ticker == b_data.ticker).first()
         if not sym:
-            sym = Symbol(ticker=b_data['ticker'], name=b_data['name'], is_active=True)
+            sym = Symbol(ticker=b_data.ticker, name=b_data.name, is_active=True)
             db.add(sym)
     db.commit()
 

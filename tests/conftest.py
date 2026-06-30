@@ -13,12 +13,14 @@ def db_session():
     yield session
     session.close()
 
+from src.config.models import FullConfig
+
 @pytest.fixture
 def sample_config():
-    """Provides a safe mocked configuration dictionary."""
-    return {
-        'telegram': {'token': 'test_token', 'chat_id': ['123']},
-        'database': {'url': 'sqlite:///:memory:'},
-        'benchmarks': [{'ticker': '^NSEI', 'name': 'Nifty 50'}],
-        'symbols': [{'ticker': 'RELIANCE.NS', 'name': 'Reliance', 'benchmarks': ['^NSEI']}]
-    }
+    """Provides a safe mocked configuration object."""
+    return FullConfig(
+        telegram={'token': 'test_token', 'chat_id': ['123']},
+        database={'url': 'sqlite:///:memory:'},
+        benchmarks=[{'ticker': '^NSEI', 'name': 'Nifty 50'}],
+        symbols=[{'ticker': 'RELIANCE.NS', 'name': 'Reliance', 'sector': 'Energy', 'benchmarks': ['^NSEI']}]
+    )

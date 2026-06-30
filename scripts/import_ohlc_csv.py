@@ -21,8 +21,8 @@ def import_csv(symbol_ticker, csv_path, timeframe_str, on_conflict):
     config = load_config()
     
     # 1. Check if symbol is in config §4.3
-    all_config_tickers = [s['ticker'] for s in config.get('symbols', [])] + \
-                         [b['ticker'] for b in config.get('benchmarks', [])]
+    all_config_tickers = [s.ticker for s in config.symbols] + \
+                         [b.ticker for b in config.benchmarks]
     
     if symbol_ticker not in all_config_tickers:
         logger.error(f"Symbol {symbol_ticker} not found in config.yaml. Please add it to config.yaml first.")

@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 def compute_ratios_for_timeframe(db: Session, timeframe: Timeframe):
     config = load_config()
-    symbols_config = config.get('symbols', [])
     
     # Map timeframe to models
     models = {
@@ -20,12 +19,12 @@ def compute_ratios_for_timeframe(db: Session, timeframe: Timeframe):
     }
     PriceModel, RatioModel = models[timeframe]
     
-    for s_config in symbols_config:
-        ticker = s_config['ticker']
+    for s_config in config.symbols:
+        ticker = s_config.ticker
         symbol = db.query(Symbol).filter(Symbol.ticker == ticker).first()
         if not symbol: continue
         
-        benchmarks_tickers = s_config.get('benchmarks', [])
+        benchmarks_tickers = s_config.benchmarks
         for b_ticker in benchmarks_tickers:
             benchmark = db.query(Benchmark).filter(Benchmark.ticker == b_ticker).first()
             if not benchmark: continue
@@ -88,6 +87,15 @@ def compute_all_ratios(timeframes: list[Timeframe] = None):
         logger.info(f"Computing ratios for {tf.value}...")
         compute_ratios_for_timeframe(db, tf)
     db.close()
+
+def compute_ratios_for_pair(asset_df: pd.DataFrame, bench_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Aligns asset and benchmark DataFrames on index and computes the ratio of their Close prices.
+    Returns a DataFrame with a 'ratio_close' column.
+    """
+    combined = pd.merge(asset_df[['Close']], bench_df[['Close']], left_index=True, right_index=True, suffixes=('_s', '_b'))
+    combined['ratio_close'] = combined['Close_s'] / combined['Close_b']
+    return combined[['ratio_close']]
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)

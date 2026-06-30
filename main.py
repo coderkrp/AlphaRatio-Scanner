@@ -35,14 +35,22 @@ async def run_pipeline():
 
         # 1. Sync Config
         logger.info("Step 1: Syncing Config...")
-        config = load_config()
+        from pydantic import ValidationError
+        import sys
+        try:
+            config = load_config()
+        except ValidationError as e:
+            logger.critical(f"Configuration validation failed:\n{e}")
+            print(f"CRITICAL: Configuration validation failed!\n{e}", file=sys.stderr)
+            sys.exit(1)
+            
         sync_config(db, config)
         
         # 2. Download latest EOD data
         logger.info("Step 2: Downloading latest EOD data...")
         symbols = db.query(Symbol).filter(Symbol.is_active == True).all()
         
-        benchmark_tickers = [b['ticker'] for b in config.get('benchmarks', [])]
+        benchmark_tickers = [b.ticker for b in config.benchmarks]
         failed_benchmarks = []
 
         for symbol in symbols:

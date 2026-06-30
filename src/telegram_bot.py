@@ -7,14 +7,12 @@ logger = logging.getLogger(__name__)
 class TelegramBot:
     def __init__(self):
         config = load_config()
-        self.token = config['telegram']['token']
-        chat_id_raw = config['telegram']['chat_id']
-        
-        # Normalize chat_id into a list of strings
-        if isinstance(chat_id_raw, list):
-            self.chat_ids = [str(cid) for cid in chat_id_raw]
+        if config.telegram:
+            self.token = config.telegram.token
+            self.chat_ids = config.telegram.chat_id
         else:
-            self.chat_ids = [str(chat_id_raw)]
+            self.token = None
+            self.chat_ids = []
             
         self.base_url = f"https://api.telegram.org/bot{self.token}/sendMessage"
 
